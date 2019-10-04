@@ -11,7 +11,7 @@ const verifierSchema = new Schema({
 	abn: String,
 	company_name: String,
 	activity_type: String,
-	role_id: { type: mongoose.Types.ObjectId, ref: 'Role' }
+	role: String,
 });
 
 verifierSchema.methods.setPassword = function (password) {
@@ -52,6 +52,7 @@ verifierSchema.methods.getData = function () {
 		abn: this.abn,
 		company_name: this.company_name,
 		activity_type: this.activity_type,
+		role: this.role,
 	};
 };
 module.exports = {
