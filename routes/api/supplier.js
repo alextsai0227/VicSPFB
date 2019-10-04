@@ -127,24 +127,31 @@ router.post('/application/:id', auth.optional, (req, res, next) => {
   empUnemployeds.forEach(function (empUnemployed, index) {
     const e = new EmpUnemployed.model(empUnemployed);
     e.supplier_id = data.supplier_id
+    e.company_name = data.company_name
     empUnemployeds[index] = e  
   });
   empRecruitAbos.forEach(function (empRecruitAbo, index) {
     const e = new EmpRecruitAbo.model(empRecruitAbo);
+    e.supplier_id = data.supplier_id
+    e.company_name = data.company_name
     empRecruitAbos[index] = e  
   });
   emp_refugees.forEach(function (emp_refugee, index) {
     const e = new EmpRefugee.model(emp_refugee);
     e.supplier_id = data.supplier_id
+    e.company_name = data.company_name
     emp_refugees[index] = e  
   });
   emp_disabilities.forEach(function (emp_disabilitie, index) {
     const e = new EmpDisability.model(emp_disabilitie);
     e.supplier_id = data.supplier_id
+    e.company_name = data.company_name
     emp_disabilities[index] = e  
   });
   aboCurs.forEach(function (aboCur, index) {
     const e = new AboCur.model(aboCur);
+    e.supplier_id = data.supplier_id
+    e.company_name = data.company_name
     aboCurs[index] = e  
   });
 

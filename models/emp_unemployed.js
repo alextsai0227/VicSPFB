@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const empUnemployedSchema = new mongoose.Schema({
 	supplier_id: {type: mongoose.Schema.Types.ObjectId, ref:'Supplier', required: true},
-    permission_name: {type:String, ref: 'Permission'},
 	curr_emp: {type:Number, required:true},
 	future_emp: {type:Number, required:true},
+	company_name: String,
 });
 
 module.exports = {
