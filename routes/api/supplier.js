@@ -3,10 +3,10 @@ const router = require('express').Router();
 const auth = require('../auth');
 const Supplier = require('../../models/supplier');
 const Application = require('../../models/application');
-const EmpCohort= require('../../models/emp_cohorts');
+const EmpUnemployed= require('../../models/emp_unemployed');
 const EmpRecruitAbo= require('../../models/emp_recruit_abo');
-const ReadinessAct= require('../../models/readiness_act');
-const SocialBenefit = require('../../models/social_benefit');
+const EmpRefugee= require('../../models/emp_refugee');
+const EmpDisability = require('../../models/emp_disability');
 const AboCur = require('../../models/emp_curr_abo');
 
 // ========================Login/Signup route========================
@@ -119,26 +119,29 @@ router.put('/user/:id', auth.optional, (req, res) => {
 router.post('/application/:id', auth.optional, (req, res, next) => {
   const { body: { data } } = req;
 
-  let empCohorts = data.cohortEmp
+  let empUnemployeds = data.unemployed
   let empRecruitAbos = data.aboEmp
-  let readinessActs = data.jobReadiness
-  let socialBenefits = data.socialBenefit
+  let emp_refugees = data.refugee
+  let emp_disabilities = data.disability
   let aboCurs = data.aboCur
-  empCohorts.forEach(function (empCohort, index) {
-    const e = new EmpCohort.model(empCohort);
-    empCohorts[index] = e  
+  empUnemployeds.forEach(function (empUnemployed, index) {
+    const e = new EmpUnemployed.model(empUnemployed);
+    e.supplier_id = data.supplier_id
+    empUnemployeds[index] = e  
   });
   empRecruitAbos.forEach(function (empRecruitAbo, index) {
     const e = new EmpRecruitAbo.model(empRecruitAbo);
     empRecruitAbos[index] = e  
   });
-  readinessActs.forEach(function (readinessAct, index) {
-    const e = new ReadinessAct.model(readinessAct);
-    readinessActs[index] = e  
+  emp_refugees.forEach(function (emp_refugee, index) {
+    const e = new EmpRefugee.model(emp_refugee);
+    e.supplier_id = data.supplier_id
+    emp_refugees[index] = e  
   });
-  socialBenefits.forEach(function (socialBenefit, index) {
-    const e = new SocialBenefit.model(socialBenefit);
-    socialBenefits[index] = e  
+  emp_disabilities.forEach(function (emp_disabilitie, index) {
+    const e = new EmpDisability.model(emp_disabilitie);
+    e.supplier_id = data.supplier_id
+    emp_disabilities[index] = e  
   });
   aboCurs.forEach(function (aboCur, index) {
     const e = new AboCur.model(aboCur);
@@ -148,18 +151,18 @@ router.post('/application/:id', auth.optional, (req, res, next) => {
   const application = new Application.model();
   application.supplier_id = data.supplier_id
   application.emp_recruit_abo = empRecruitAbos
-  application.emp_cohorts = empCohorts
-  application.social_benefit = socialBenefits
-  application.readiness_act = readinessActs
+  application.emp_disability = emp_disabilities
+  application.emp_refugee = emp_refugees
+  application.emp_unemploy = empUnemployeds
   application.emp_curr_abo = aboCurs
   application.created_date = new Date()
 
 
   try {
-    EmpCohort.model.insertMany(empCohorts);
+    EmpUnemployed.model.insertMany(empUnemployeds);
     EmpRecruitAbo.model.insertMany(empRecruitAbos);
-    ReadinessAct.model.insertMany(readinessActs);
-    SocialBenefit.model.insertMany(socialBenefits);
+    EmpRefugee.model.insertMany(emp_refugees);
+    EmpDisability.model.insertMany(emp_disabilities);
     AboCur.model.insertMany(aboCurs);
     application.save();
     return res.sendStatus(201);
@@ -169,7 +172,27 @@ router.post('/application/:id', auth.optional, (req, res, next) => {
   }
 });
 
-//GET application route by application id
+//PUT application route
+router.put('/application/:id', auth.optional, (req, res) => {
+  const { body: { data } } = req;
+  let update_data = new Object();
+  if (data.abo_existing_data){
+    update_data.abo_existing_data_status = data.abo_existing_data
+  }
+  return Application.model.updateOne({"_id": req.params.id}, 
+  {$set:update_data},{multi:true}
+  ).then((result) => {
+      console.log(result)
+      console.log(req.params.id)
+      console.log(update_data)
+      return res.json({ result: result});
+    }).catch((err) => {
+      console.log(err)
+    });
+  
+});
+
+//GET application details route by application id
 router.get('/application/:id', auth.optional, (req, res) => {
   return Application.model.findOne({_id: req.params.id})
     .then((application) => {
@@ -183,7 +206,7 @@ router.get('/application/:id', auth.optional, (req, res) => {
   
 });
 
-//GET applications route by user id 
+//GET all applications for the supplier route by user id 
 router.get('/applications/:id', auth.optional, (req, res) => {
   return Application.model.find({supplier_id: req.params.id})
     .then((applications) => {
