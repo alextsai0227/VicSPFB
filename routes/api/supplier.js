@@ -4,10 +4,9 @@ const auth = require('../auth');
 const Supplier = require('../../models/supplier');
 const Application = require('../../models/application');
 const EmpUnemployed= require('../../models/emp_unemployed');
-const EmpRecruitAbo= require('../../models/emp_recruit_abo');
 const EmpRefugee= require('../../models/emp_refugee');
 const EmpDisability = require('../../models/emp_disability');
-const AboCur = require('../../models/emp_curr_abo');
+const EmpAbo = require('../../models/emp_abo');
 
 // ========================Login/Signup route========================
 //POST new user route (optional, everyone has access)
@@ -119,51 +118,50 @@ router.put('/user/:id', auth.optional, (req, res) => {
 router.post('/application/:id', auth.optional, (req, res, next) => {
   const { body: { data } } = req;
 
-  let empUnemployeds = data.unemployed
-  let empRecruitAbos = data.aboEmp
+  let emp_unemployeds = data.unemployed
   let emp_refugees = data.refugee
   let emp_disabilities = data.disability
-  let aboCurs = data.aboCur
-  empUnemployeds.forEach(function (empUnemployed, index) {
+  let emp_abos = data.abo
+  emp_unemployeds.forEach(function (empUnemployed, index) {
     const e = new EmpUnemployed.model(empUnemployed);
     e.supplier_id = data.supplier_id
-    empUnemployeds[index] = e  
-  });
-  empRecruitAbos.forEach(function (empRecruitAbo, index) {
-    const e = new EmpRecruitAbo.model(empRecruitAbo);
-    empRecruitAbos[index] = e  
+    e.company_name = data.company_name
+    emp_unemployeds[index] = e  
   });
   emp_refugees.forEach(function (emp_refugee, index) {
     const e = new EmpRefugee.model(emp_refugee);
     e.supplier_id = data.supplier_id
+    e.company_name = data.company_name
     emp_refugees[index] = e  
   });
   emp_disabilities.forEach(function (emp_disabilitie, index) {
     const e = new EmpDisability.model(emp_disabilitie);
     e.supplier_id = data.supplier_id
+    e.company_name = data.company_name
     emp_disabilities[index] = e  
   });
-  aboCurs.forEach(function (aboCur, index) {
-    const e = new AboCur.model(aboCur);
-    aboCurs[index] = e  
+  emp_abos.forEach(function (emp_abo, index) {
+    const e = new EmpAbo.model(emp_abo);
+    e.supplier_id = data.supplier_id
+    e.company_name = data.company_name
+    emp_abos[index] = e  
   });
 
   const application = new Application.model();
   application.supplier_id = data.supplier_id
-  application.emp_recruit_abo = empRecruitAbos
   application.emp_disability = emp_disabilities
   application.emp_refugee = emp_refugees
-  application.emp_unemploy = empUnemployeds
-  application.emp_curr_abo = aboCurs
+  application.emp_unemploy = emp_unemployeds
+  application.emp_abo = emp_abos
+  application.company_name = data.company_name
   application.created_date = new Date()
 
 
   try {
-    EmpUnemployed.model.insertMany(empUnemployeds);
-    EmpRecruitAbo.model.insertMany(empRecruitAbos);
+    EmpUnemployed.model.insertMany(emp_unemployeds);
+    EmpAbo.model.insertMany(emp_abos);
     EmpRefugee.model.insertMany(emp_refugees);
     EmpDisability.model.insertMany(emp_disabilities);
-    AboCur.model.insertMany(aboCurs);
     application.save();
     return res.sendStatus(201);
   } catch (e) {
