@@ -10,6 +10,7 @@ const applicationSchema = new mongoose.Schema({
 	status: {type: String, default: 'Unverified'},
 	abo_existing_data_status: '',
 	numEmp: Number,
+	company_name: String,
 	created_date: Date
 });
 
@@ -24,6 +25,7 @@ applicationSchema.methods.getData = function() {
 	  emp_unemploy:  this.emp_unemploy,
 	  status: this.status,
 	  numEmp: this.numEmp,
+	  company_name: this.company_name,
 	  abo_existing_data_status: this.abo_existing_data_status
 	};
 };

@@ -155,6 +155,7 @@ router.post('/application/:id', auth.optional, (req, res, next) => {
   application.emp_refugee = emp_refugees
   application.emp_unemploy = empUnemployeds
   application.emp_curr_abo = aboCurs
+  application.company_name = data.company_name
   application.created_date = new Date()
 
 
