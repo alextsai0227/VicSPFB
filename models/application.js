@@ -7,7 +7,10 @@ const applicationSchema = new mongoose.Schema({
 	emp_refugee: [],
 	emp_unemploy: [],
 	status: {type: String, default: 'Unverified'},
-	abo_existing_data_status: '',
+	abo_existing_data_status: String,
+	disability_data_status: String,
+	refugee_data_status: String,
+	unemployed_data_status: String,
 	numEmp: Number,
 	company_name: String,
 	created_date: Date,
@@ -25,6 +28,9 @@ applicationSchema.methods.getData = function() {
 	  numEmp: this.numEmp,
 	  company_name: this.company_name,
 	  abo_existing_data_status: this.abo_existing_data_status,
+	  disability_data_status: this.disability_data_status,
+	  unemployed_data_status: this.unemployed_data_status,
+	  refugee_data_status: this.refugee_data_status,
 	  created_date: this.created_date,
 	};
 };
