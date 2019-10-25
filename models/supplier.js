@@ -13,7 +13,8 @@ const supplierSchema = new Schema({
 	suburb:  String,
 	state:  String, 
     abn: String, 
-    company_name: String,
+	company_name: String,
+	role: String,
     application_id: {type: mongoose.Schema.Types.ObjectId, ref:'Application'}
 });
 
@@ -57,7 +58,8 @@ supplierSchema.methods.getData = function() {
 	  suburb:  this.suburb,
 	  state:  this.state, 
       abn: this.abn, 
-      company_name: this.company_name,
+	  company_name: this.company_name,
+	  role: this.role,
 	};
 };
 
