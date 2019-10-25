@@ -185,16 +185,11 @@ router.post('/application/:id', auth.optional, (req, res, next) => {
 //PUT application route
 router.put('/application/:id', auth.optional, (req, res) => {
   const { body: { data } } = req;
-  let update_data = new Object();
-  if (data.abo_existing_data){
-    update_data.abo_existing_data_status = data.abo_existing_data
-  }
+  
   return Application.model.updateOne({"_id": req.params.id}, 
-  {$set:update_data},{multi:true}
+  {$set:data},{multi:true}
   ).then((result) => {
       console.log(result)
-      console.log(req.params.id)
-      console.log(update_data)
       return res.json({ result: result});
     }).catch((err) => {
       console.log(err)
