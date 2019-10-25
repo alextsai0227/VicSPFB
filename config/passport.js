@@ -1,7 +1,8 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const Supplier = require('../models/supplier')
-const Verifier = require('../models/verifier')
+const Supplier = require('../models/supplier');
+const Verifier = require('../models/verifier');
+const Gov = require('../models/gov');
 
 passport.use('local_supplier', new LocalStrategy({
   usernameField: 'user[email]',
@@ -22,6 +23,20 @@ passport.use('local_verifier', new LocalStrategy({
   passwordField: 'user[password]',
 }, (email, password, done) => {
   Verifier.model.findOne({ email })
+    .then((user) => {
+      if(!user || !user.validatePassword(password)) {
+        return done(null, false, { errors: { 'email or password': 'is invalid' } });
+      }
+
+      return done(null, user);
+    }).catch(done);
+}));
+
+passport.use('local_gov', new LocalStrategy({
+  usernameField: 'user[email]',
+  passwordField: 'user[password]',
+}, (email, password, done) => {
+  Gov.model.findOne({ email })
     .then((user) => {
       if(!user || !user.validatePassword(password)) {
         return done(null, false, { errors: { 'email or password': 'is invalid' } });
