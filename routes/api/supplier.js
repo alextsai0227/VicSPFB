@@ -94,6 +94,18 @@ router.get('/current', auth.required, (req, res, next) => {
     });
 });
 
+//GET current route (required, only authenticated users have access)
+router.get('/user/:id', auth.optional, (req, res, next) => {
+  
+  return Supplier.model.findById(req.params.id
+  ).then((user) => {
+
+      return res.json({ user: user});
+    }).catch((err) => {
+      return res.status(400).json({ err: err});
+    });
+});
+
 //PUT user route
 router.put('/user/:id', auth.optional, (req, res) => {
   const { body: { data } } = req;
