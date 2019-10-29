@@ -120,5 +120,20 @@ router.get('/applications', auth.optional, (req, res) => {
 
 });
 
+//GET all applications route 
+router.get('/applications/:year', auth.optional, (req, res) => {
+
+  return Application.model.find()
+    .then((applications) => {
+      if (!applications) {
+        return res.sendStatus(400);
+      }
+      
+      const filtered_application = applications.filter(application => (application.created_date.getYear() + 1900).toString() === req.params.year)
+      return res.json({ applications: filtered_application });
+    });
+
+});
+
 
 module.exports = router;
