@@ -535,7 +535,7 @@
       "resolved": "https://registry.npmjs.org/expand-brackets/-/expand-brackets-2.1.4.tgz",
       "version": "2.1.4"
     },
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-jwt": "^5.3.1",
     "express-session": "^1.16.2",
     "extend-shallow": {
